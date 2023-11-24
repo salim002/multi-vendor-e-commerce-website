@@ -10,4 +10,4 @@ const Routes = () => {
   )
 }
 
-export {LoginPage, SignupPage}
+export {Routes, LoginPage, SignupPage}
