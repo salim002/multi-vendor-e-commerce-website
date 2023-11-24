@@ -14,6 +14,10 @@ if(process.env.NODE_ENV !== "PRODUCTION") {
     });
 }
 
+// Connect db
+const connectToMongo = require("./db/Database.js");
+connectToMongo();
+
 
 // create server
 const server = app.listen(process.env.PORT, () => {
