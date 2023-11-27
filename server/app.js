@@ -5,19 +5,25 @@ const port = 8000;
 const ErrorHandler = require("./utils/ErrorHandler");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
-const fileUpload = require("express-fileupload");
+const cors = require("cors");
 
 app.use(express.json());
-app.use(cookieParser);
-app.use(bodyParser.urlencoded({ extended: true}));
-app.use(fileUpload({useTempFiles: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(cors());
+app.use("/", express.static("uploads"));
 
-// config
-if(process.env.NODE_ENV !== "PRODUCTION"){
+// Config
+if (process.env.NODE_ENV !== "PRODUCTION") {
     require("dotenv").config({
         path: "server/config/.env"
-    })
+    });
 }
+
+// Import routes
+const user = require("./controller/user");
+
+app.use("/api/v2/user", user);
 
 // Error Handling
 app.use(ErrorHandler);
