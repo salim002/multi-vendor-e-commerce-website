@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const port = 8000;
 
-const ErrorHandler = require("./utils/ErrorHandler");
+const ErrorHandler = require("./middleware/error");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const cors = require("cors");
