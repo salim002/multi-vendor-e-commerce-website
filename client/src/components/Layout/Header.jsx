@@ -6,6 +6,7 @@ import DropDown from "./DropDown";
 import Navbar from "./Navbar";
 import { useSelector } from "react-redux";
 import { backend_url } from "../../server";
+import Cart from "../cart/Cart";
 
 import {
   AiOutlineHeart,
@@ -22,6 +23,8 @@ const Header = ({ activeHeading }) => {
   const [searchData, setSearchData] = useState(null);
   const [active, setActive] = useState(false);
   const [dropDown, setDropDown] = useState(false);
+  const [openCart, setOpenCart] = useState(false);
+  const [openWishList, setOpenWishList] = useState(false);
 
   const handleSearchChange = (e) => {
     const term = e.target.value;
@@ -48,7 +51,6 @@ const Header = ({ activeHeading }) => {
   return (
     <>
       <div className={`${styles.section}`}>
-        {/* <div className="hidden 800px:h-[50px] 800px:my-[20px] 800px:flex items-center justify-between"> */}
         <div className="800px:h-[50px] 800px:my-[20px] flex 800px:flex items-center justify-between mt-4">
           <div>
             <Link to="/">
@@ -94,12 +96,9 @@ const Header = ({ activeHeading }) => {
             ) : null}
           </div>
           <div className={`${styles.button}`}>
-            {/* <Link to={`${isSeller ? "/dashboard" : "/shop-create"}`}> */}
             <h1 className="text-[#fff] flex items-center">
-              {/* {isSeller ? "Go Dashboard" : "Become Seller"}{" "} */}
               Become Seller <IoIosArrowForward className="ml-1" />
             </h1>
-            {/* </Link> */}
           </div>
         </div>
       </div>
@@ -148,7 +147,10 @@ const Header = ({ activeHeading }) => {
               </div>
             </div>
             <div className={`${styles.noramlFlex}`}>
-              <div className="relative cursor-pointer mr-[15px]">
+              <div
+                className="relative cursor-pointer mr-[15px]"
+                onClick={() => setOpenCart(true)}
+              >
                 <AiOutlineShoppingCart
                   size={30}
                   color="rgb(255 255 255 / 83%)"
@@ -162,7 +164,11 @@ const Header = ({ activeHeading }) => {
               <div className="relative cursor-pointer mr-[15px]">
                 {isAuthenticated ? (
                   <Link to="/profile">
-                    <img src={`${backend_url}${user.avatar}`} alt="" className="h-[35px] w-[35px] rounded-full" />
+                    <img
+                      src={`${backend_url}${user.avatar}`}
+                      alt=""
+                      className="h-[35px] w-[35px] rounded-full"
+                    />
                   </Link>
                 ) : (
                   <Link to="/login">
@@ -171,6 +177,9 @@ const Header = ({ activeHeading }) => {
                 )}
               </div>
             </div>
+
+            {/*Cart popup */}
+            {openCart ? <Cart setOpenCart={setOpenCart} /> : null}
           </div>
         </div>
       </div>
