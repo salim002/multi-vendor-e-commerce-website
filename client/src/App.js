@@ -9,6 +9,7 @@ import {
   BestsellingPage,
   EventsPage,
   FAQPage,
+  ProductsDetailsPage,
 } from "./Routes.js";
 
 import { ToastContainer } from "react-toastify";
@@ -38,6 +39,7 @@ const App = () => {
               element={<ActivationPage />}
             />
             <Route path="/products" element={<ProductsPage />} />
+            <Route path="/product/:name" element={<ProductsDetailsPage />} />
             <Route path="/best-selling" element={<BestsellingPage />} />
             <Route path="/events" element={<EventsPage />} />
             <Route path="/faq" element={<FAQPage />} />

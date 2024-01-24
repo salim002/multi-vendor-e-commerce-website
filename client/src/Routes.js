@@ -6,7 +6,11 @@ import HomePage from "./pages/HomePage";
 import ProductsPage from "./pages/ProductsPage";
 import BestsellingPage from "./pages/BestsellingPage";
 import EventsPage from "./pages/EventsPage";
-import FAQPage from "./pages/FAQPage"
+import FAQPage from "./pages/FAQPage";
+import CheckoutPage from "./pages/CheckoutPage";
+import PaymentPage from "./pages/PaymentPage";
+import OrderSuccessPage from "./pages/OrderSuccessPage";
+import ProductsDetailsPage from "./pages/ProductsDetailsPage";
 
 const Routes = () => {
   return <div></div>;
@@ -22,4 +26,8 @@ export {
   BestsellingPage,
   EventsPage,
   FAQPage,
+  CheckoutPage,
+  PaymentPage,
+  OrderSuccessPage,
+  ProductsDetailsPage,
 };
