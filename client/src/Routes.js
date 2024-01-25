@@ -11,6 +11,7 @@ import CheckoutPage from "./pages/CheckoutPage";
 import PaymentPage from "./pages/PaymentPage";
 import OrderSuccessPage from "./pages/OrderSuccessPage";
 import ProductsDetailsPage from "./pages/ProductsDetailsPage";
+import ProfilePage from "./pages/ProfilePage";
 
 const Routes = () => {
   return <div></div>;
@@ -30,4 +31,5 @@ export {
   PaymentPage,
   OrderSuccessPage,
   ProductsDetailsPage,
+  ProfilePage,
 };

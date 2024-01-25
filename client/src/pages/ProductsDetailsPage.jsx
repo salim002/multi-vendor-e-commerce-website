@@ -14,7 +14,8 @@ const ProductsDetailsPage = () => {
   useEffect(() => {
     const data = productData.find((i) => i.name === productName);
     setData(data);
-  }, []);
+    // eslint-disable-next-line
+  }, []); 
 
   return (
     <div>
