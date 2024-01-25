@@ -12,6 +12,7 @@ import PaymentPage from "./pages/PaymentPage";
 import OrderSuccessPage from "./pages/OrderSuccessPage";
 import ProductsDetailsPage from "./pages/ProductsDetailsPage";
 import ProfilePage from "./pages/ProfilePage";
+import ShopCreatePage from "./pages/ShopCreatePage";
 
 const Routes = () => {
   return <div></div>;
@@ -32,4 +33,5 @@ export {
   OrderSuccessPage,
   ProductsDetailsPage,
   ProfilePage,
+  ShopCreatePage,
 };

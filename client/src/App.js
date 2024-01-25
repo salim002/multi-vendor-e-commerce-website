@@ -14,6 +14,7 @@ import {
   PaymentPage,
   OrderSuccessPage,
   ProfilePage,
+  ShopCreatePage,
 } from "./Routes.js";
 
 import { ToastContainer } from "react-toastify";
@@ -66,6 +67,7 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
+            <Route path="/shop-create" element={<ShopCreatePage/>} />
           </Routes>
           <ToastContainer
             position="top-center"
