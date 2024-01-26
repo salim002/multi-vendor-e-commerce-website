@@ -131,6 +131,7 @@ router.get(
   "/getuser",
   isAuthenticated,
   catchAsyncErrors(async (req, res, next) => {
+    console.log(req.user.id);
     try {
       const user = await User.findById(req.user.id);
 

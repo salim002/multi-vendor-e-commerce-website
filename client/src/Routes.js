@@ -13,6 +13,7 @@ import OrderSuccessPage from "./pages/OrderSuccessPage";
 import ProductsDetailsPage from "./pages/ProductsDetailsPage";
 import ProfilePage from "./pages/ProfilePage";
 import ShopCreatePage from "./pages/ShopCreatePage";
+import SellerActivationPage from "./pages/SellerActivationPage";
 
 const Routes = () => {
   return <div></div>;
@@ -34,4 +35,5 @@ export {
   ProductsDetailsPage,
   ProfilePage,
   ShopCreatePage,
+  SellerActivationPage,
 };

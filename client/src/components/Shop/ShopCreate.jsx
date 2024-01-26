@@ -1,7 +1,7 @@
 import { React, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import styles from "../../styles/styles";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { server } from "../../server";
 import { toast } from "react-toastify";
@@ -10,9 +10,9 @@ import { RxAvatar } from "react-icons/rx";
 const ShopCreate = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState();
+  const [phoneNumber, setPhoneNumber] = useState(0);
   const [address, setAddress] = useState("");
-  const [zipCode, setZipCode] = useState();
+  const [zipCode, setZipCode] = useState(0);
   const [avatar, setAvatar] = useState();
   const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
@@ -20,25 +20,36 @@ const ShopCreate = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const phoneNumberToSend = phoneNumber === "" ? 0 : phoneNumber;
+    const zipCodeToSend = zipCode === "" ? 0 : zipCode;
+
+    const formdata = new FormData();
+    formdata.append("file", avatar);
+    formdata.append("name", name);
+    formdata.append("email", email);
+    formdata.append("password", password);
+    formdata.append("zipCode", zipCodeToSend);
+    formdata.append("address", address);
+    formdata.append("phoneNumber", phoneNumberToSend);
+    const formDataObject = {};
+    for (const [key, value] of formdata.entries()) {
+      formDataObject[key] = value;
+    }
+
+    console.log(formDataObject);
+
     axios
-      .post(`${server}/shop/create-shop`, {
-        name,
-        email,
-        password,
-        avatar,
-        zipCode,
-        address,
-        phoneNumber,
-      })
+      .post(`${server}/shop/create-shop`, formdata)
       .then((res) => {
         toast.success(res.data.message);
+
         setName("");
         setEmail("");
         setPassword("");
-        setAvatar();
-        setZipCode();
+        setAvatar(null);
+        setZipCode("");
         setAddress("");
-        setPhoneNumber();
+        setPhoneNumber("");
       })
       .catch((error) => {
         toast.error(error.response.data.message);
@@ -46,15 +57,8 @@ const ShopCreate = () => {
   };
 
   const handleFileInputChange = (e) => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      if (reader.readyState === 2) {
-        setAvatar(reader.result);
-      }
-    };
-
-    reader.readAsDataURL(e.target.files[0]);
+    const file = e.target.files[0];
+    setAvatar(file);
   };
 
   return (
@@ -88,7 +92,7 @@ const ShopCreate = () => {
 
             <div>
               <label
-                htmlFor="email"
+                htmlFor="phone-number"
                 className="block text-sm font-medium text-gray-700"
               >
                 Phone Number
@@ -98,7 +102,7 @@ const ShopCreate = () => {
                   type="number"
                   name="phone-number"
                   required
-                  value={phoneNumber}
+                  value={phoneNumber === 0 ? "" : phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
@@ -127,14 +131,14 @@ const ShopCreate = () => {
 
             <div>
               <label
-                htmlFor="email"
+                htmlFor="address"
                 className="block text-sm font-medium text-gray-700"
               >
                 Address
               </label>
               <div className="mt-1">
                 <input
-                  type="address"
+                  type="text"
                   name="address"
                   required
                   value={address}
@@ -146,7 +150,7 @@ const ShopCreate = () => {
 
             <div>
               <label
-                htmlFor="email"
+                htmlFor="zip-code"
                 className="block text-sm font-medium text-gray-700"
               >
                 Zip Code
@@ -154,9 +158,9 @@ const ShopCreate = () => {
               <div className="mt-1">
                 <input
                   type="number"
-                  name="zipcode"
+                  name="zip-code"
                   required
-                  value={zipCode}
+                  value={zipCode === 0 ? "" : zipCode}
                   onChange={(e) => setZipCode(e.target.value)}
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
