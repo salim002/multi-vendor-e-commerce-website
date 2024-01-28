@@ -5,12 +5,12 @@ import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getAllProductsShop } from "../../redux/actions/product";
+import { deleteProduct } from "../../redux/actions/product";
 import Loader from "../Layout/Loader";
 
 const AllProducts = () => {
   const { products, isLoading } = useSelector((state) => state.products);
   const { seller } = useSelector((state) => state.seller);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -18,7 +18,8 @@ const AllProducts = () => {
   }, [dispatch]);
 
   const handleDelete = (id) => {
-
+    dispatch(deleteProduct(id));
+    window.location.reload();
   };
 
   const columns = [
