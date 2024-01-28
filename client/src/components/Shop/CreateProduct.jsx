@@ -1,8 +1,17 @@
-import React, {  useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { categoriesData } from "../../static/data";
+import { useDispatch, useSelector } from "react-redux";
+import { createProduct } from "../../redux/actions/product";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const CreateProduct = () => {
+  const { seller } = useSelector((state) => state.seller);
+  const { success, error } = useSelector((state) => state.products);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [images, setImages] = useState([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -12,6 +21,17 @@ const CreateProduct = () => {
   const [discountPrice, setDiscountPrice] = useState();
   const [stock, setStock] = useState();
 
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+    if (success) {
+      toast.success("Product created successfully!");
+      navigate("/dashboard");
+      window.location.reload();
+    }
+  }, [dispatch, error, success]);
+
   const handleImageChange = (e) => {
     e.preventDefault();
     const files = Array.from(e.target.files);
@@ -19,7 +39,27 @@ const CreateProduct = () => {
   };
 
   const handleSubmit = (e) => {
+    e.preventDefault();
 
+    const newForm = new FormData();
+    images.forEach((image) => {
+      newForm.append("images", image);
+    });
+    newForm.append("name", name);
+    newForm.append("description", description);
+    newForm.append("category", category);
+    newForm.append("tags", tags);
+    newForm.append("originalPrice", originalPrice);
+    newForm.append("discountPrice", discountPrice);
+    newForm.append("stock", stock);
+    newForm.append("shopId", seller._id);
+    // const newFormObject = {};
+    // newForm.forEach((value, key) => {
+    //   newFormObject[key] = value;
+    // });
+    // console.log("newForm:", newFormObject);
+
+    dispatch(createProduct(newForm));
   };
 
   return (
