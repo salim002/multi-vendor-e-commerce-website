@@ -1,11 +1,19 @@
-import React, {  useState } from "react";
-import { Link } from "react-router-dom";
+import React, {  useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 import styles from "../../styles/styles";
 import ProductCard from "../Route/ProductCard/ProductCard";
 import Ratings from "../Products/Ratings";
 import { productData } from "../../static/data";
+import { useSelector, useDispatch } from "react-redux";
+import { getAllProductsShop } from "../../redux/actions/product";
 
 const ShopProfileData = ({ isOwner }) => {
+  const {products} = useSelector((state) => state.products);
+  const {id} = useParams();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getAllProductsShop(id));
+  }, [dispatch])
 
   const [active, setActive] = useState(1);
 

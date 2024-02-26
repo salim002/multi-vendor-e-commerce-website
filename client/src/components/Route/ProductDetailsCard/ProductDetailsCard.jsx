@@ -34,6 +34,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                   className="h-[400px] w-[400px] "
                 />
                 <div className="flex">
+                  {/* {console.log(data.shop)} */}
                   <Link to={`/shop/preview/${data.shop._id}`} className="flex">
                     <img
                       src={`${data.image_Url[0]?.url}`}
