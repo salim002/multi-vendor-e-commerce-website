@@ -18,9 +18,6 @@ const ProductCard = ({ data }) => {
   const [click, setClick] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const d = data.name;
-  const product_name = d.replace(/\s+/g, "-");
-
   return (
     <>
       {data?.images?.length > 0 && (
@@ -37,7 +34,7 @@ const ProductCard = ({ data }) => {
           <Link to={`/shop/preview/${data?.shopId}`}>
             <h5 className={`${styles.shop_name}`}>{data.shop.name}</h5>
           </Link>
-          <Link to={`/product/${product_name}`}>
+          <Link to={`/product/${data._id}`}>
             <h4 className="pb-3 font-[500]">
               {data.name.length > 40
                 ? data.name.slice(0, 40) + "..."

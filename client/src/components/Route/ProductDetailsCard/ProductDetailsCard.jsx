@@ -8,6 +8,7 @@ import {
 import { RxCross1 } from "react-icons/rx";
 import { Link } from "react-router-dom";
 import styles from "../../../styles/styles";
+import { backend_url } from "../../../server";
 
 const ProductDetailsCard = ({ setOpen, data }) => {
   const [count, setCount] = useState(1);
@@ -29,7 +30,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
             <div className="w-full flex">
               <div className="w-[50%]">
                 <img
-                  src={`${data.image_Url[0]?.url}`}
+                  src={`${backend_url}/${data.images[0]}`}
                   alt=""
                   className="h-[400px] w-[400px] "
                 />
@@ -37,7 +38,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                   {/* {console.log(data.shop)} */}
                   <Link to={`/shop/preview/${data.shop._id}`} className="flex">
                     <img
-                      src={`${data.image_Url[0]?.url}`}
+                      src={`${backend_url}/${data.images[0]}`}
                       alt=""
                       className="w-[50px] h-[50px] rounded-full mr-2"
                     />
@@ -46,7 +47,8 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                         {data.shop.name}
                       </h3>
                       <h5 className="pb-3 text-[15px]">
-                        {data.shop.ratings} Ratings
+                        {/* {data.shop.ratings} Ratings */}
+                        4.2 Ratings
                       </h5>
                     </div>
                   </Link>
@@ -60,7 +62,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                   </span>
                 </div>
                 <h5 className="text-[16px] text-[red] mt-5">
-                  ({data.total_sell}) Sold out
+                  ({data.sold_out}) Sold out
                 </h5>
               </div>
 
@@ -71,10 +73,10 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                 <p>{data.description}</p>
                 <div className="flex pt-3">
                   <h4 className={`${styles.productDiscountPrice}`}>
-                    {data.discount_price}$
+                    {data.discountPrice}$
                   </h4>
                   <h3 className={`${styles.price}`}>
-                    {data.price ? data.price + "$" : null}
+                    {data.originalPrice ? data.originalPrice + "$" : null}
                   </h3>
                 </div>
                 <div className="flex items-center mt-12 justify-between pr-3">
