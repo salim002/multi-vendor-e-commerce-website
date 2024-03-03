@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../../styles/styles";
 import { Link } from "react-router-dom";
 import { categoriesData, productData } from "../../static/data";
 import DropDown from "./DropDown";
 import Navbar from "./Navbar";
-import { useSelector } from "react-redux";
 import { backend_url } from "../../server";
 import Cart from "../cart/Cart";
 import Wishlist from "../Wishlist/Wishlist";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllProducts } from "../../redux/actions/product";
 
 import {
   AiOutlineHeart,
@@ -19,7 +20,10 @@ import { BiMenuAltLeft } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
 
 const Header = ({ activeHeading }) => {
+  const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector((state) => state.user);
+  const { allProducts } = useSelector((state) => state.products);
+  // console.log(allProducts);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchData, setSearchData] = useState(null);
   const [active, setActive] = useState(false);
@@ -27,13 +31,17 @@ const Header = ({ activeHeading }) => {
   const [openCart, setOpenCart] = useState(false);
   const [openWishList, setOpenWishList] = useState(false);
 
+  useEffect(() => {
+    dispatch(getAllProducts());
+  }, [dispatch]);
+
   const handleSearchChange = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
 
     const filteredProducts =
-      productData &&
-      productData.filter((product) =>
+      allProducts &&
+      allProducts.filter((product) =>
         product.name.toLowerCase().includes(term.toLowerCase())
       );
     setSearchData(filteredProducts);
@@ -75,16 +83,14 @@ const Header = ({ activeHeading }) => {
               className="absolute right-2 top-1.5 cursor-pointer"
             />
             {searchTerm && searchData && searchData.length !== 0 ? (
-              <div className="absolute min-h-[30vh] bg-slate-50 shadow-sm-2 z-[9] p-4">
+              <div className="absolute w-[100%] bg-slate-50 shadow-sm-2 z-[9] p-4">
                 {searchData &&
                   searchData.map((i, index) => {
-                    const d = i.name;
-                    const Product_name = d.replace(/\+/g, "-");
                     return (
-                      <Link to={`/product/${Product_name}`}>
+                      <Link to={`/product/${i._id}`}>
                         <div className="w-full flex items-start-py-3">
                           <img
-                            src={`${i.image_Url[0]?.url}`}
+                            src={`${backend_url}${i.images[0]}`}
                             alt=""
                             className="w-[40px] h-[40px] mr-[10px]"
                           />

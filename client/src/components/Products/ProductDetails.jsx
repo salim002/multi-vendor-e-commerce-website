@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AiFillHeart,
   AiOutlineHeart,
@@ -8,13 +8,22 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import styles from "../../styles/styles";
 import { backend_url } from "../../server";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllProductsShop } from "../../redux/actions/product";
 
 const ProductDetails = ({ data }) => {
   // console.log("Data: ", data);
+  const dispatch = useDispatch();
+  const { products } = useSelector((state) => state.products);
+  // console.log(products);
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);
   const [select, setSelect] = useState(1);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(getAllProductsShop(data?.shopId));
+  }, [dispatch, data]);
 
   const handleMessageSubmit = () => {
     navigate("/inbox?conversation=507ebjver884ehfdjeriv84");
@@ -26,43 +35,30 @@ const ProductDetails = ({ data }) => {
         <div className={`${styles.section}w-[80%]`}>
           <div className="w-full py-5">
             <div className="w-full flex">
-              <div className="w-[45%] ml-20 mt-4">
+              <div className="w-[50%]">
                 {data?.images?.length > 0 && (
                   <img
-                    src={`${backend_url}/${data.images[0]}`}
+                    src={`${backend_url}/${data.images[select]}`}
                     alt=""
-                    className="w-[45%] mb-4"
+                    className="w-[40%] mb-4 mx-auto"
                   />
                 )}
-                <div className="w-full flex">
-                  <div
-                    className={`${
-                      select === 0 ? "border" : "null"
-                    } cursor-pointer`}
-                  >
-                    {data?.images?.length > 0 && (
-                      <img
-                        src={`${backend_url}/${data.images[0]}`}
-                        alt=""
-                        className="h-[200px]"
-                        onClick={() => setSelect(0)}
-                      />
-                    )}
-                  </div>
-                  <div
-                    className={`${
-                      select === 1 ? "border" : "null"
-                    } cursor-pointer`}
-                  >
-                    {data?.images?.length > 0 && (
-                      <img
-                        src={`${backend_url}/${data.images[1]}`}
-                        alt=""
-                        className="h-[200px]"
-                        onClick={() => setSelect(1)}
-                      />
-                    )}
-                  </div>
+                <div className="w-full flex justify-center">
+                  {data &&
+                    data.images.map((i, index) => (
+                      <div
+                        className={`${
+                          select === 0 ? "border" : "null"
+                        } cursor-pointer`}
+                      >
+                        <img
+                          src={`${backend_url}${i}`}
+                          alt=""
+                          className="h-[200px] overflow-hidden mr-3 mt-3"
+                          onClick={() => setSelect(index)}
+                        />
+                      </div>
+                    ))}
                 </div>
               </div>
               <div className="w-[50%] pt-5">
@@ -152,7 +148,7 @@ const ProductDetails = ({ data }) => {
               </div>
             </div>
           </div>
-          <ProductDetailsInfo data={data} />
+          <ProductDetailsInfo data={data} products={products} />
           <br />
           <br />
         </div>
@@ -161,7 +157,7 @@ const ProductDetails = ({ data }) => {
   );
 };
 
-const ProductDetailsInfo = ({ data }) => {
+const ProductDetailsInfo = ({ data, products }) => {
   const [active, setActive] = useState(1);
 
   return (
@@ -250,10 +246,14 @@ const ProductDetailsInfo = ({ data }) => {
           <div className="w-[50%] mt-0 flex flex-col items-end">
             <div className="text-left">
               <h5 className="font-[600]">
-                Joined on: <span className="font-[500]">24 Jan, 2024</span>
+                Joined on:{" "}
+                <span className="font-[500]">
+                  {data.shop?.createdAt?.slice(0, 10)}
+                </span>
               </h5>
               <h5 className="font-[600] pt-3">
-                Total Products: <span className="font-[500]"> 1688</span>
+                Total Products:{" "}
+                <span className="font-[500]"> {products?.length}</span>
               </h5>
               <h5 className="font-[600] pt-3">
                 Total Reviews: <span className="font-[500]">223</span>
