@@ -37,11 +37,15 @@ import Store from "./redux/store";
 import { loadUser, loadSeller } from "./redux/actions/user";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import SellerProtectedRoute from "./routes/SellerProtectedRoute";
+import { getAllProducts} from "./redux/actions/product";
+import {getAllEvents} from "./redux/actions/event";
 
 const App = () => {
   useEffect(() => {
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
+    Store.dispatch(getAllProducts());
+    Store.dispatch(getAllEvents());
   }, []);
 
   return (
