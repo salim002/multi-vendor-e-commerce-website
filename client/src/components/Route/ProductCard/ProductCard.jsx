@@ -15,6 +15,7 @@ import {
 } from "react-icons/ai";
 
 const ProductCard = ({ data }) => {
+
   const [click, setClick] = useState(false);
   const [open, setOpen] = useState(false);
 
