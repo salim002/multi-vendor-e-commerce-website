@@ -2,8 +2,6 @@ import React, {  useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import styles from "../../styles/styles";
 import ProductCard from "../Route/ProductCard/ProductCard";
-import Ratings from "../Products/Ratings";
-import { productData } from "../../static/data";
 import { useSelector, useDispatch } from "react-redux";
 import { getAllProductsShop } from "../../redux/actions/product";
 
@@ -66,8 +64,8 @@ const ShopProfileData = ({ isOwner }) => {
       <br />
       {active === 1 && (
         <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-3 lg:gap-[25px] xl:grid-cols-4 xl:gap-[20px] mb-12 border-0">
-          {productData &&
-            productData.map((i, index) => (
+          {products &&
+            products.map((i, index) => (
               <ProductCard data={i} key={index} isShop={true} />
             ))}
         </div>
