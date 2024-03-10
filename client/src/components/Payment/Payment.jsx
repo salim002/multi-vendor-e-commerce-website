@@ -16,6 +16,7 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 const Payment = () => {
   const [orderData, setOrderData] = useState([]);
@@ -24,7 +25,8 @@ const Payment = () => {
   const navigate = useNavigate();
   const elements = useElements();
   const stripe = useStripe();
-  const REACT_APP_STRIPE_API_KEY = "pk_test_51Orls3SC5gfhx6xHOZ4RrMP7FWdUTJAozCklpno7lfXEcz9RyMV6HD0EnkwiWZxMIQw9EH3yidq4W7ljSeP3H3C200AFZ2hqHP"
+  const REACT_APP_STRIPE_API_KEY =
+    "pk_test_51Orls3SC5gfhx6xHOZ4RrMP7FWdUTJAozCklpno7lfXEcz9RyMV6HD0EnkwiWZxMIQw9EH3yidq4W7ljSeP3H3C200AFZ2hqHP";
 
   useEffect(() => {
     const orderData = JSON.parse(localStorage.getItem("latestOrder"));
@@ -32,7 +34,25 @@ const Payment = () => {
   }, []);
 
   const createOrder = (data, actions) => {
-    //
+    return actions.order
+      .create({
+        purchase_units: [
+          {
+            description: "Sunflower",
+            amount: {
+              currency_code: "USD",
+              value: orderData?.totalPrice,
+            },
+          },
+        ],
+        // not needed if a shipping address is actually needed
+        application_context: {
+          shipping_preference: "NO_SHIPPING",
+        },
+      })
+      .then((orderID) => {
+        return orderID;
+      });
   };
 
   const order = {
@@ -43,11 +63,40 @@ const Payment = () => {
   };
 
   const onApprove = async (data, actions) => {
-    //
+    return actions.order.capture().then(function (details) {
+      const { payer } = details;
+
+      let paymentInfo = payer;
+
+      if (paymentInfo !== undefined) {
+        paypalPaymentHandler(paymentInfo);
+      }
+    });
   };
 
   const paypalPaymentHandler = async (paymentInfo) => {
-    //
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    order.paymentInfo = {
+      id: paymentInfo.payer_id,
+      status: "succeeded",
+      type: "Paypal",
+    };
+
+    await axios
+      .post(`${server}/order/create-order`, order, config)
+      .then((res) => {
+        setOpen(false);
+        navigate("/order/success");
+        toast.success("Order successful!");
+        localStorage.setItem("cartItems", JSON.stringify([]));
+        localStorage.setItem("latestOrder", JSON.stringify([]));
+        window.location.reload();
+      });
   };
 
   const paymentData = {
@@ -271,7 +320,7 @@ const PaymentInfo = ({
           </h4>
         </div>
 
-        {/* pay with payement */}
+        {/* pay with paypal */}
         {select === 2 ? (
           <div className="w-full flex border-b">
             <div
@@ -282,7 +331,7 @@ const PaymentInfo = ({
             </div>
             {open && (
               <div className="w-full fixed top-0 left-0 bg-[#00000039] h-screen flex items-center justify-center z-[99999]">
-                <div className="w-full lg:w-96 h-screen lg:h-[80vh] bg-white rounded-[5px] shadow flex flex-col justify-center p-8 relative overflow-y-scroll">
+                <div className="w-[40%] h-[80vh] bg-white rounded-[5px] shadow flex flex-col justify-center p-8 relative overflow-y-scroll">
                   <div className="w-full flex justify-end p-3">
                     <RxCross1
                       size={30}
@@ -290,6 +339,18 @@ const PaymentInfo = ({
                       onClick={() => setOpen(false)}
                     />
                   </div>
+                  <PayPalScriptProvider
+                    options={{
+                      "client-id":
+                        "Aczac4Ry9_QA1t4c7TKH9UusH3RTe6onyICPoCToHG10kjlNdI-qwobbW9JAHzaRQwFMn2-k660853jn",
+                    }}
+                  >
+                    <PayPalButtons
+                      style={{ layout: "vertical" }}
+                      onApprove={onApprove}
+                      createOrder={createOrder}
+                    />
+                  </PayPalScriptProvider>
                 </div>
               </div>
             )}
