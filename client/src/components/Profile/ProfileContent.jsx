@@ -20,6 +20,7 @@ import {
   deleteUserAddress,
 } from "../../redux/actions/user";
 import { toast } from "react-toastify";
+import { getAllOrdersOfUser } from "../../redux/actions/order";
 
 const ProfileContent = ({ active }) => {
   const dispatch = useDispatch();
@@ -187,28 +188,13 @@ const ProfileContent = ({ active }) => {
 };
 
 const AllOrders = () => {
-  const orders = [
-    {
-      _id: "7463hvbfbhfbrtr28820221",
-      orderItems: [
-        {
-          name: "Iphone 14 pro max",
-        },
-      ],
-      totalPrice: 120,
-      orderStatus: "Processing",
-    },
-    {
-      _id: "7463hvbfbhfbrtr28820222",
-      orderItems: [
-        {
-          name: "Iphone 14 pro max",
-        },
-      ],
-      totalPrice: 120,
-      orderStatus: "Processing",
-    },
-  ];
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.user);
+  const { orders } = useSelector((state) => state.order);
+
+  useEffect(() => {
+    dispatch(getAllOrdersOfUser(user._id));
+  }, [dispatch]);
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
@@ -267,9 +253,9 @@ const AllOrders = () => {
     orders.forEach((item) => {
       row.push({
         id: item._id,
-        itemsQty: item.orderItems.length,
+        itemsQty: item.cart.length,
         total: "US$ " + item.totalPrice,
-        status: item.orderStatus,
+        status: item.status,
       });
     });
 
@@ -279,8 +265,8 @@ const AllOrders = () => {
         rows={row}
         columns={columns}
         pageSize={10}
-        autoHeight
         disableSelectionOnClick
+        autoHeight
       />
     </div>
   );

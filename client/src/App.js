@@ -28,6 +28,7 @@ import {
   ShopAllEvents,
   ShopAllCoupouns,
   ShopPreviewPage,
+  ShopAllOrders,
 } from "./routes/ShopRoutes";
 
 import { ToastContainer } from "react-toastify";
@@ -137,6 +138,14 @@ const App = () => {
           element={
             <SellerProtectedRoute>
               <ShopCreateProduct />
+            </SellerProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard-orders"
+          element={
+            <SellerProtectedRoute>
+              <ShopAllOrders />
             </SellerProtectedRoute>
           }
         />
