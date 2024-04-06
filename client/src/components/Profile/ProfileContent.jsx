@@ -188,13 +188,13 @@ const ProfileContent = ({ active }) => {
 };
 
 const AllOrders = () => {
-  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
   const { orders } = useSelector((state) => state.order);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getAllOrdersOfUser(user._id));
-  }, [dispatch]);
+  }, []);
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },

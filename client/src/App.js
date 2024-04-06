@@ -17,6 +17,7 @@ import {
   ShopCreatePage,
   SellerActivationPage,
   ShopLoginPage,
+  OrderDetailsPage,
 } from "./routes/Routes.js";
 
 import {
@@ -29,6 +30,7 @@ import {
   ShopAllCoupouns,
   ShopPreviewPage,
   ShopAllOrders,
+  ShopOrderDetails,
 } from "./routes/ShopRoutes";
 
 import { ToastContainer } from "react-toastify";
@@ -113,6 +115,14 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/user/order/:id"
+          element={
+            <ProtectedRoute>
+              <OrderDetailsPage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/shop/preview/:id" element={<ShopPreviewPage />} />
         {/* Shop Routes */}
         <Route path="/shop-create" element={<ShopCreatePage />} />
@@ -146,6 +156,14 @@ const App = () => {
           element={
             <SellerProtectedRoute>
               <ShopAllOrders />
+            </SellerProtectedRoute>
+          }
+        />
+        <Route
+          path="/order/:id"
+          element={
+            <SellerProtectedRoute>
+              <ShopOrderDetails/>
             </SellerProtectedRoute>
           }
         />
