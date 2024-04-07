@@ -11,14 +11,13 @@ import {
 } from "../../../redux/actions/wishlist";
 import { addTocart } from "../../../redux/actions/cart";
 import { toast } from "react-toastify";
+import Ratings from "../../Products/Ratings";
 
 import {
   AiFillHeart,
-  AiFillStar,
   AiOutlineEye,
   AiOutlineHeart,
   AiOutlineShoppingCart,
-  AiOutlineStar,
 } from "react-icons/ai";
 
 const ProductCard = ({ data }) => {
@@ -36,7 +35,7 @@ const ProductCard = ({ data }) => {
       setClick(false);
     }
   }, [wishlist]);
-  
+
   const removeFromWishlistHandler = (data) => {
     setClick(!click);
     dispatch(removeFromWishlist(data));
@@ -62,7 +61,6 @@ const ProductCard = ({ data }) => {
     }
   };
 
-
   return (
     <>
       {data?.images?.length > 0 && (
@@ -86,31 +84,7 @@ const ProductCard = ({ data }) => {
                 : data.name}
             </h4>
             <div className="flex">
-              <AiFillStar
-                className="mr-2 cursor-pointer"
-                size={20}
-                color="#F6BA00"
-              />
-              <AiFillStar
-                className="mr-2 cursor-pointer"
-                size={20}
-                color="#F6BA00"
-              />
-              <AiFillStar
-                className="mr-2 cursor-pointer"
-                size={20}
-                color="#F6BA00"
-              />
-              <AiFillStar
-                className="mr-2 cursor-pointer"
-                size={20}
-                color="#F6BA00"
-              />
-              <AiOutlineStar
-                className="mr-2 cursor-pointer"
-                size={20}
-                color="#F6BA00"
-              />
+              <Ratings rating={data?.ratings} />
             </div>
             <div className="py-2 flex items-center justify-between">
               <div className="flex">
@@ -125,7 +99,7 @@ const ProductCard = ({ data }) => {
                 </h4>
               </div>
               <span className="font-[400] text-[17px] text-[#68d284] ">
-                {data.total_sell ? data.total_sell : 0} sold
+                {data.sold_out ? data.sold_out : 0} sold
               </span>
             </div>
           </Link>
