@@ -1,35 +1,37 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import {
   AiOutlineArrowRight,
   AiOutlineCamera,
   AiOutlineDelete,
 } from "react-icons/ai";
+import { useDispatch, useSelector } from "react-redux";
 import { server, backend_url } from "../../server";
 import styles from "../../styles/styles";
+import { DataGrid } from "@material-ui/data-grid";
+import { Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { MdTrackChanges } from "react-icons/md";
 import { RxCross1 } from "react-icons/rx";
-import { Country, State } from "country-state-city";
-import { useDispatch, useSelector } from "react-redux";
-import { DataGrid } from "@material-ui/data-grid";
-import { Button } from "@material-ui/core";
 import {
-  updateUserInformation,
-  updatUserAddress,
   deleteUserAddress,
+  loadUser,
+  updatUserAddress,
+  updateUserInformation,
 } from "../../redux/actions/user";
+import { Country, State } from "country-state-city";
+import { useEffect } from "react";
 import { toast } from "react-toastify";
+import axios from "axios";
 import { getAllOrdersOfUser } from "../../redux/actions/order";
 
 const ProfileContent = ({ active }) => {
-  const dispatch = useDispatch();
   const { user, error, successMessage } = useSelector((state) => state.user);
   const [name, setName] = useState(user && user.name);
   const [email, setEmail] = useState(user && user.email);
   const [phoneNumber, setPhoneNumber] = useState(user && user.phoneNumber);
   const [password, setPassword] = useState("");
   const [avatar, setAvatar] = useState(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (error) {
@@ -48,36 +50,43 @@ const ProfileContent = ({ active }) => {
   };
 
   const handleImage = async (e) => {
-    const file = e.target.files[0];
-    setAvatar(file);
-    const formData = new FormData();
-    formData.append("image", e.target.files[0]);
-    await axios
-      .put(`${server}/user/update-avatar`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        withCredentials: true,
-      })
-      .then((response) => {
-        window.location.reload();
-      })
-      .catch((error) => {
-        toast.error(error);
-      });
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      if (reader.readyState === 2) {
+        setAvatar(reader.result);
+        axios
+          .put(
+            `${server}/user/update-avatar`,
+            { avatar: reader.result },
+            {
+              withCredentials: true,
+            }
+          )
+          .then((response) => {
+            dispatch(loadUser());
+            toast.success("avatar updated successfully!");
+          })
+          .catch((error) => {
+            toast.error(error);
+          });
+      }
+    };
+
+    reader.readAsDataURL(e.target.files[0]);
   };
 
   return (
     <div className="w-full">
-      {/* Profile */}
+      {/* profile */}
       {active === 1 && (
         <>
           <div className="flex justify-center w-full">
             <div className="relative">
               <img
-                src={`${backend_url}${user?.avatar}`}
-                alt=""
+                src={`${backend_url}/${user?.avatar}`}
                 className="w-[150px] h-[150px] rounded-full object-cover border-[3px] border-[#3ad132]"
+                alt=""
               />
               <div className="w-[30px] h-[30px] bg-[#E3E9EE] rounded-full flex items-center justify-center cursor-pointer absolute bottom-[5px] right-[5px]">
                 <input
@@ -95,7 +104,7 @@ const ProfileContent = ({ active }) => {
           <br />
           <br />
           <div className="w-full px-5">
-            <form onSubmit={handleSubmit} area-required={true}>
+            <form onSubmit={handleSubmit} aria-required={true}>
               <div className="w-full flex pb-3">
                 <div className="w-[50%]">
                   <label className="block pb-2">Full Name</label>
@@ -120,7 +129,7 @@ const ProfileContent = ({ active }) => {
               </div>
 
               <div className="w-full flex pb-3">
-                <div className="w-[50%]">
+                <div className=" w-[50%]">
                   <label className="block pb-2">Phone Number</label>
                   <input
                     type="number"
@@ -130,8 +139,9 @@ const ProfileContent = ({ active }) => {
                     onChange={(e) => setPhoneNumber(e.target.value)}
                   />
                 </div>
+
                 <div className="w-[50%]">
-                  <label className="block pb-2">Enter Your Password</label>
+                  <label className="block pb-2">Enter your password</label>
                   <input
                     type="password"
                     className={`${styles.input} !w-[95%] mb-0`}
@@ -152,7 +162,7 @@ const ProfileContent = ({ active }) => {
         </>
       )}
 
-      {/* Order */}
+      {/* order */}
       {active === 2 && (
         <div>
           <AllOrders />
@@ -166,18 +176,21 @@ const ProfileContent = ({ active }) => {
         </div>
       )}
 
-      {/* Track Order */}
+      {/* Track order */}
       {active === 5 && (
         <div>
           <TrackOrder />
         </div>
       )}
+
       {/* Change Password */}
       {active === 6 && (
         <div>
           <ChangePassword />
         </div>
       )}
+
+      {/*  user Address */}
       {active === 7 && (
         <div>
           <Address />
@@ -273,28 +286,16 @@ const AllOrders = () => {
 };
 
 const AllRefundOrders = () => {
-  const orders = [
-    {
-      _id: "7463hvbfbhfbrtr28820221",
-      orderItems: [
-        {
-          name: "Iphone 14 pro max",
-        },
-      ],
-      totalPrice: 120,
-      orderStatus: "Processing",
-    },
-    {
-      _id: "7463hvbfbhfbrtr28820222",
-      orderItems: [
-        {
-          name: "Iphone 14 pro max",
-        },
-      ],
-      totalPrice: 120,
-      orderStatus: "Processing",
-    },
-  ];
+  const { user } = useSelector((state) => state.user);
+  const { orders } = useSelector((state) => state.order);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllOrdersOfUser(user._id));
+  }, []);
+
+  const eligibleOrders =
+    orders && orders.filter((item) => item.status === "Processing refund");
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
@@ -349,13 +350,13 @@ const AllRefundOrders = () => {
 
   const row = [];
 
-  orders &&
-    orders.forEach((item) => {
+  eligibleOrders &&
+    eligibleOrders.forEach((item) => {
       row.push({
         id: item._id,
-        itemsQty: item.orderItems.length,
+        itemsQty: item.cart.length,
         total: "US$ " + item.totalPrice,
-        status: item.orderStatus,
+        status: item.status,
       });
     });
 
@@ -373,28 +374,13 @@ const AllRefundOrders = () => {
 };
 
 const TrackOrder = () => {
-  const orders = [
-    {
-      _id: "7463hvbfbhfbrtr28820221",
-      orderItems: [
-        {
-          name: "Iphone 14 pro max",
-        },
-      ],
-      totalPrice: 120,
-      orderStatus: "Processing",
-    },
-    {
-      _id: "7463hvbfbhfbrtr28820222",
-      orderItems: [
-        {
-          name: "Iphone 14 pro max",
-        },
-      ],
-      totalPrice: 120,
-      orderStatus: "Processing",
-    },
-  ];
+  const { user } = useSelector((state) => state.user);
+  const { orders } = useSelector((state) => state.order);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllOrdersOfUser(user._id));
+  }, []);
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
@@ -453,9 +439,9 @@ const TrackOrder = () => {
     orders.forEach((item) => {
       row.push({
         id: item._id,
-        itemsQty: item.orderItems.length,
+        itemsQty: item.cart.length,
         total: "US$ " + item.totalPrice,
-        status: item.orderStatus,
+        status: item.status,
       });
     });
 
@@ -487,7 +473,7 @@ const ChangePassword = () => {
         { withCredentials: true }
       )
       .then((res) => {
-        toast.success(res.data.message);
+        toast.success(res.data.success);
         setOldPassword("");
         setNewPassword("");
         setConfirmPassword("");
@@ -550,8 +536,6 @@ const ChangePassword = () => {
 };
 
 const Address = () => {
-  const dispatch = useDispatch();
-
   const [open, setOpen] = useState(false);
   const [country, setCountry] = useState("");
   const [city, setCity] = useState("");
@@ -560,6 +544,7 @@ const Address = () => {
   const [address2, setAddress2] = useState("");
   const [addressType, setAddressType] = useState("");
   const { user } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
   const addressTypeData = [
     {
@@ -648,7 +633,7 @@ const Address = () => {
                   </div>
 
                   <div className="w-full pb-2">
-                    <label className="block pb-2">Choose your State</label>
+                    <label className="block pb-2">Choose your City</label>
                     <select
                       name=""
                       id=""
@@ -657,7 +642,7 @@ const Address = () => {
                       className="w-[95%] border h-[40px] rounded-[5px]"
                     >
                       <option value="" className="block border pb-2">
-                        choose your State
+                        choose your city
                       </option>
                       {State &&
                         State.getStatesOfCountry(country).map((item) => (
@@ -751,7 +736,7 @@ const Address = () => {
           className={`${styles.button} !rounded-md`}
           onClick={() => setOpen(true)}
         >
-          <span className="text-[#fff]">Add New Address</span>
+          <span className="text-[#fff]">Add New</span>
         </div>
       </div>
       <br />
@@ -766,11 +751,13 @@ const Address = () => {
             </div>
             <div className="pl-8 flex items-center">
               <h6 className="text-[unset]">
-                {item.address1}, {item.address2}
+                {item.address1} {item.address2}
               </h6>
             </div>
             <div className="pl-8 flex items-center">
-              <h6 className="text-[unset]">{user && user.phoneNumber}</h6>
+              <h6 className="text-[unset]">
+                {user && user.phoneNumber}
+              </h6>
             </div>
             <div className="min-w-[10%] flex items-center justify-between pl-8">
               <AiOutlineDelete
@@ -781,6 +768,7 @@ const Address = () => {
             </div>
           </div>
         ))}
+
       {user && user.addresses.length === 0 && (
         <h5 className="text-center pt-8 text-[18px]">
           You not have any saved address!
@@ -789,5 +777,4 @@ const Address = () => {
     </div>
   );
 };
-
 export default ProfileContent;
