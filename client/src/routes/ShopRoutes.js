@@ -10,6 +10,7 @@ import ShopAllOrders from "../pages/Shop/ShopAllOrders";
 import ShopOrderDetails from "../pages/Shop/ShopOrderDetails";
 import ShopAllRefunds from "../pages/Shop/ShopAllRefunds";
 import ShopSettingsPage from "../pages/Shop/ShopSettingsPage";
+import ShopWithdrawMoneyPage from "../pages/Shop/ShopWithdrawMoneyPage";
 
 // eslint-disable-next-line
 const ShopRoutes = () => {
@@ -29,4 +30,5 @@ export {
   ShopOrderDetails,
   ShopAllRefunds,
   ShopSettingsPage,
+  ShopWithdrawMoneyPage,
 };
