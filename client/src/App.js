@@ -32,6 +32,7 @@ import {
   ShopPreviewPage,
   ShopAllOrders,
   ShopOrderDetails,
+  ShopAllRefunds,
 } from "./routes/ShopRoutes";
 
 import { ToastContainer } from "react-toastify";
@@ -165,6 +166,14 @@ const App = () => {
           element={
             <SellerProtectedRoute>
               <ShopAllOrders />
+            </SellerProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard-refunds"
+          element={
+            <SellerProtectedRoute>
+              <ShopAllRefunds/>
             </SellerProtectedRoute>
           }
         />
