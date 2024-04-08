@@ -9,6 +9,7 @@ import ShopPreviewPage from "../pages/Shop/ShopPreviewPage";
 import ShopAllOrders from "../pages/Shop/ShopAllOrders";
 import ShopOrderDetails from "../pages/Shop/ShopOrderDetails";
 import ShopAllRefunds from "../pages/Shop/ShopAllRefunds";
+import ShopSettingsPage from "../pages/Shop/ShopSettingsPage";
 
 // eslint-disable-next-line
 const ShopRoutes = () => {
@@ -27,4 +28,5 @@ export {
   ShopAllOrders,
   ShopOrderDetails,
   ShopAllRefunds,
+  ShopSettingsPage,
 };
