@@ -17,6 +17,8 @@ import {
   removeFromWishlist,
 } from "../../redux/actions/wishlist";
 import Ratings from "./Ratings";
+import { server } from "../../server";
+import axios from "axios";
 
 const ProductDetails = ({ data }) => {
   // console.log("Data: ", data);
@@ -24,6 +26,7 @@ const ProductDetails = ({ data }) => {
   const { products } = useSelector((state) => state.products);
   const { wishlist } = useSelector((state) => state.wishlist);
   const { cart } = useSelector((state) => state.cart);
+  const { user, isAuthenticated } = useSelector((state) => state.user);
   // console.log(products);
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);
@@ -39,8 +42,26 @@ const ProductDetails = ({ data }) => {
     }
   }, [dispatch, data, wishlist]);
 
-  const handleMessageSubmit = () => {
-    navigate("/inbox?conversation=507ebjver884ehfdjeriv84");
+  const handleMessageSubmit = async () => {
+    if (isAuthenticated) {
+      const groupTitle = data._id + user._id;
+      const userId = user._id;
+      const sellerId = data.shop._id;
+      await axios
+        .post(`${server}/conversation/create-new-conversation`, {
+          groupTitle,
+          userId,
+          sellerId,
+        })
+        .then((res) => {
+          navigate(`/inbox?${res.data.conversation._id}`);
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
+    } else {
+      toast.error("Please login to create a conversation");
+    }
   };
 
   const removeFromWishlistHandler = (data) => {
@@ -218,7 +239,12 @@ const ProductDetails = ({ data }) => {
   );
 };
 
-const ProductDetailsInfo = ({ data, products, totalReviewsLength, averageRating }) => {
+const ProductDetailsInfo = ({
+  data,
+  products,
+  totalReviewsLength,
+  averageRating,
+}) => {
   const [active, setActive] = useState(1);
 
   return (
